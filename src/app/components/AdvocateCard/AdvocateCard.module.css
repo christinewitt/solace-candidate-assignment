@@ -1,0 +1,31 @@
+.card {
+  background-color: var(--white);
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  padding: 2rem 2.5rem;
+  width: 495px;
+}
+
+.specialties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cardHeader {
+  display: flex;
+  gap: 8px;
+}
+
+.advocateName {
+  font-size: 28px;
+}
+
+.advocateDetails {
+  margin: 12px 0;
+}
+
+.specialtiesHeader {
+  font-weight: bold;
+  margin-bottom: 12px
+}

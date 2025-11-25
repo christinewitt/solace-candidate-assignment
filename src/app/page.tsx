@@ -3,6 +3,7 @@
 import { Advocates } from "@/db/schema";
 import { useQuery } from "@tanstack/react-query";
 import { ChangeEvent, useEffect, useState } from "react";
+import AdvocateCard from "./components/AdvocateCard/AdvocateCard";
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,7 +16,6 @@ export default function Home() {
 
     return () => clearTimeout(timeoutId);
   }, [searchTerm])
-
 
   const { data: advocates, isError, error } = useQuery<Advocates[]>({
     queryKey: ["advocates", debouncedSearchTerm],
@@ -45,7 +45,7 @@ export default function Home() {
   }
 
   return (
-    <main style={{ margin: "24px" }}>
+    <main>
       <h1>Solace Advocates</h1>
       <br />
       <br />
@@ -59,38 +59,9 @@ export default function Home() {
       </div>
       <br />
       <br />
-      <table>
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>City</th>
-            <th>Degree</th>
-            <th>Specialties</th>
-            <th>Years of Experience</th>
-            <th>Phone Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          {advocates?.map((advocate: Advocates) => {
-            return (
-              <tr key={advocate.id}>
-                <td>{advocate.firstName}</td>
-                <td>{advocate.lastName}</td>
-                <td>{advocate.city}</td>
-                <td>{advocate.degree}</td>
-                <td>
-                  {advocate.specialties.map((specialty) => (
-                    <div key={specialty}>{specialty}</div>
-                  ))}
-                </td>
-                <td>{advocate.yearsOfExperience}</td>
-                <td>{advocate.phoneNumber}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <section className="card-container">
+        {advocates?.map((advocate) => <AdvocateCard advocate={advocate} key={advocate.id} />)}
+      </section>
     </main>
   );
 }
