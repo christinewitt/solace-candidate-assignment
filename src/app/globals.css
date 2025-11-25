@@ -1,3 +1,42 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  --brand: #347866;
+  --brand-darker: #275B4E;
+  --brand-secondary: #f4e5ca;
+  --brand-secondary-darker: #664403;
+  --black: #000000;
+  --white: #ffffff;
+}
+
+main {
+  margin: 0 auto;
+  max-width: 1060px;
+  padding: 24px 20px 96px 20px;
+}
+
+body {
+  font-family: Tahoma, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: Georgia, serif;
+}
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 14px;
+
+  @media (max-width: 1043px) {
+    justify-content: center;
+  }
+}

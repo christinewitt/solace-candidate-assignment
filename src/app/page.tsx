@@ -3,6 +3,8 @@
 import { Advocates } from "@/db/schema";
 import { useQuery } from "@tanstack/react-query";
 import { ChangeEvent, useEffect, useState } from "react";
+import AdvocateCard from "./components/AdvocateCard/AdvocateCard";
+import Header from "./components/Header/Header";
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,7 +17,6 @@ export default function Home() {
 
     return () => clearTimeout(timeoutId);
   }, [searchTerm])
-
 
   const { data: advocates, isError, error } = useQuery<Advocates[]>({
     queryKey: ["advocates", debouncedSearchTerm],
@@ -45,52 +46,11 @@ export default function Home() {
   }
 
   return (
-    <main style={{ margin: "24px" }}>
-      <h1>Solace Advocates</h1>
-      <br />
-      <br />
-      <div>
-        <p>Search</p>
-        <p>
-          Searching for: <span id="search-term">{searchTerm}</span>
-        </p>
-        <input style={{ border: "1px solid black" }} onChange={onChange} value={searchTerm} />
-        <button onClick={onClick}>Reset Search</button>
-      </div>
-      <br />
-      <br />
-      <table>
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>City</th>
-            <th>Degree</th>
-            <th>Specialties</th>
-            <th>Years of Experience</th>
-            <th>Phone Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          {advocates?.map((advocate: Advocates) => {
-            return (
-              <tr key={advocate.id}>
-                <td>{advocate.firstName}</td>
-                <td>{advocate.lastName}</td>
-                <td>{advocate.city}</td>
-                <td>{advocate.degree}</td>
-                <td>
-                  {advocate.specialties.map((specialty) => (
-                    <div key={specialty}>{specialty}</div>
-                  ))}
-                </td>
-                <td>{advocate.yearsOfExperience}</td>
-                <td>{advocate.phoneNumber}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+    <main>
+      <Header onChange={onChange} onClick={onClick} searchTerm={searchTerm} />
+      <section className="card-container">
+        {advocates?.map((advocate) => <AdvocateCard advocate={advocate} key={advocate.id} />)}
+      </section>
     </main>
   );
 }

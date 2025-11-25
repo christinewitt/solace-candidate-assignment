@@ -1,0 +1,18 @@
+.tag {
+  align-self: center;
+  background-color: #3478661a;
+  border-radius: 12px;
+  color: var(--brand);
+  display: block;
+  font-size: .9rem;
+  padding: 6px 10px;
+  text-align: center;
+}
+
+.secondary {
+  background-color: var(--brand-secondary);
+  color: var(--brand-secondary-darker);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 8px;
+}
