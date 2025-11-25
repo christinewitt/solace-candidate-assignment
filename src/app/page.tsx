@@ -2,16 +2,26 @@
 
 import { Advocates } from "@/db/schema";
 import { useQuery } from "@tanstack/react-query";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm])
+
 
   const { data: advocates, isError, error } = useQuery<Advocates[]>({
-    queryKey: ["advocates", searchTerm],
+    queryKey: ["advocates", debouncedSearchTerm],
     queryFn: async () => {
-      const url = searchTerm
-        ? `/api/advocates?search=${encodeURIComponent(searchTerm)}`
+      const url = debouncedSearchTerm
+        ? `/api/advocates?search=${encodeURIComponent(debouncedSearchTerm)}`
         : "/api/advocates";
 
       const response = await fetch(url);
@@ -27,6 +37,7 @@ export default function Home() {
 
   const onClick = () => {
     setSearchTerm("");
+    setDebouncedSearchTerm("");
   };
 
   if (isError) {
