@@ -4,6 +4,7 @@ import { Advocates } from "@/db/schema";
 import { useQuery } from "@tanstack/react-query";
 import { ChangeEvent, useEffect, useState } from "react";
 import AdvocateCard from "./components/AdvocateCard/AdvocateCard";
+import Header from "./components/Header/Header";
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -46,19 +47,7 @@ export default function Home() {
 
   return (
     <main>
-      <h1>Solace Advocates</h1>
-      <br />
-      <br />
-      <div>
-        <p>Search</p>
-        <p>
-          Searching for: <span id="search-term">{searchTerm}</span>
-        </p>
-        <input style={{ border: "1px solid black" }} onChange={onChange} value={searchTerm} />
-        <button onClick={onClick}>Reset Search</button>
-      </div>
-      <br />
-      <br />
+      <Header onChange={onChange} onClick={onClick} searchTerm={searchTerm} />
       <section className="card-container">
         {advocates?.map((advocate) => <AdvocateCard advocate={advocate} key={advocate.id} />)}
       </section>
