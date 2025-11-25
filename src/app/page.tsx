@@ -1,46 +1,32 @@
 "use client";
 
 import { Advocates } from "@/db/schema";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { ChangeEvent } from "react";
 
 export default function Home() {
-  const [advocates, setAdvocates] = useState([]);
-  const [filteredAdvocates, setFilteredAdvocates] = useState([]);
-
-  useEffect(() => {
-    console.log("fetching advocates...");
-    fetch("/api/advocates").then((response) => {
-      response.json().then((jsonResponse) => {
-        setAdvocates(jsonResponse.data);
-        setFilteredAdvocates(jsonResponse.data);
-      });
-    });
-  }, []);
+  const { data: advocates, isError, error } = useQuery<Advocates[]>({
+    queryKey: ["advocates"],
+    queryFn: async () => {
+      const response = await fetch("/api/advocates");
+      if (!response.ok) throw new Error("Response was not ok")
+      return await response.json();
+    }
+  })
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     const searchTerm = event.target.value;
 
     document.getElementById("search-term").innerHTML = searchTerm;
-
-    console.log("filtering advocates...");
-    const filteredAdvocates = advocates.filter((advocate: Advocates) => {
-      return (
-        advocate.firstName.includes(searchTerm) ||
-        advocate.lastName.includes(searchTerm) ||
-        advocate.city.includes(searchTerm) ||
-        advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm) ||
-        advocate.yearsOfExperience.includes(searchTerm)
-      );
-    });
-
-    setFilteredAdvocates(filteredAdvocates);
   };
 
   const onClick = () => {
     console.log(advocates);
-    setFilteredAdvocates(advocates);
   };
+
+  if (isError) {
+    return <span>Error: {error.message}</span>;
+  }
 
   return (
     <main style={{ margin: "24px" }}>
@@ -70,7 +56,7 @@ export default function Home() {
           </tr>
         </thead>
         <tbody>
-          {filteredAdvocates.map((advocate: Advocates) => {
+          {advocates?.map((advocate: Advocates) => {
             return (
               <tr key={advocate.id}>
                 <td>{advocate.firstName}</td>
