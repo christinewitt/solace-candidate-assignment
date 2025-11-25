@@ -1,5 +1,6 @@
 "use client";
 
+import { Advocates } from "@/db/schema";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -22,7 +23,7 @@ export default function Home() {
     document.getElementById("search-term").innerHTML = searchTerm;
 
     console.log("filtering advocates...");
-    const filteredAdvocates = advocates.filter((advocate) => {
+    const filteredAdvocates = advocates.filter((advocate: Advocates) => {
       return (
         advocate.firstName.includes(searchTerm) ||
         advocate.lastName.includes(searchTerm) ||
@@ -69,7 +70,7 @@ export default function Home() {
           </tr>
         </thead>
         <tbody>
-          {filteredAdvocates.map((advocate) => {
+          {filteredAdvocates.map((advocate: Advocates) => {
             return (
               <tr key={advocate.id}>
                 <td>{advocate.firstName}</td>
