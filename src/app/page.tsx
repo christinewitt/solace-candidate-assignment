@@ -6,6 +6,7 @@ import { useState, ChangeEvent, useEffect } from "react";
 import AdvocateCard from "./components/AdvocateCard/AdvocateCard";
 import Header from "./components/Header/Header";
 import Pagination from "./components/Pagination/Pagination";
+import SearchDetails from "./components/SearchDetails/SearchDetails";
 
 export type PaginatedResponse = {
   data: Advocates[];
@@ -67,6 +68,7 @@ export default function Home() {
   return (
     <main>
       <Header onChange={onChange} onClick={onClick} searchTerm={searchTerm} />
+      <SearchDetails advocates={advocates} searchTerm={searchTerm} />
       <section className="card-container">
         {advocates?.data.map((advocate) => (
           <AdvocateCard advocate={advocate} key={advocate.id} />
