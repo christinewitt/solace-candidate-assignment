@@ -2,34 +2,52 @@
 
 import { Advocates } from "@/db/schema";
 import { useQuery } from "@tanstack/react-query";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import AdvocateCard from "./components/AdvocateCard/AdvocateCard";
 import Header from "./components/Header/Header";
+import Pagination from "./components/Pagination/Pagination";
+
+export type PaginatedResponse = {
+  data: Advocates[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasMore: boolean;
+  };
+}
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
+      setPage(1);
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [searchTerm])
+  }, [searchTerm]);
 
-  const { data: advocates, isError, error } = useQuery<Advocates[]>({
-    queryKey: ["advocates", debouncedSearchTerm],
+  const { data: advocates, isError, error, isLoading } = useQuery<PaginatedResponse>({
+    queryKey: ["advocates", debouncedSearchTerm, page],
     queryFn: async () => {
-      const url = debouncedSearchTerm
-        ? `/api/advocates?search=${encodeURIComponent(debouncedSearchTerm)}`
-        : "/api/advocates";
+      const params = new URLSearchParams({
+        page: page.toString(),
+      });
 
-      const response = await fetch(url);
+      if (debouncedSearchTerm) {
+        params.append("search", debouncedSearchTerm);
+      }
+
+      const response = await fetch(`/api/advocates?${params}`);
       if (!response.ok) throw new Error("Response was not ok")
       return await response.json();
-    }
-  })
+    },
+  });
 
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -39,6 +57,7 @@ export default function Home() {
   const onClick = () => {
     setSearchTerm("");
     setDebouncedSearchTerm("");
+    setPage(1);
   };
 
   if (isError) {
@@ -49,8 +68,11 @@ export default function Home() {
     <main>
       <Header onChange={onChange} onClick={onClick} searchTerm={searchTerm} />
       <section className="card-container">
-        {advocates?.map((advocate) => <AdvocateCard advocate={advocate} key={advocate.id} />)}
+        {advocates?.data.map((advocate) => (
+          <AdvocateCard advocate={advocate} key={advocate.id} />
+        ))}
       </section>
+      <Pagination advocates={advocates} setPage={setPage} />
     </main>
   );
 }
