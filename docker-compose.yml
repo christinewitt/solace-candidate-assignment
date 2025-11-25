@@ -2,13 +2,16 @@ services:
   db:
     image: postgres
     restart: always
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: solaceassignment
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
     volumes:
-      - psql:/var/lib/postgresql/data
+      - psql:/var/lib/postgresql
     ports:
       - 5432:5432
+
 volumes:
   psql:
